@@ -118,6 +118,19 @@ func BenchmarkDT_MutexLockUnlock(b *testing.B) {
 	}
 }
 
+func BenchmarkDT_N_MutexLockUnlock(b *testing.B) {
+	mx := sync.Mutex{}
+
+	for i := 0; i < b.N; i++ {
+		mx.Lock()
+
+		go func() {
+		}()
+
+		mx.Unlock()
+	}
+}
+
 func TestRWTMutex(t *testing.T) {
 
 	var mx RWTMutex
