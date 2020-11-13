@@ -35,6 +35,22 @@ func BenchmarkRWTMutexTryLockUnlock(b *testing.B) {
 	}
 }
 
+func BenchmarkDT_RWTMutexTryLockUnlock(b *testing.B) {
+	ctx := context.Background()
+	mx := RWTMutex{}
+
+	for i := 0; i < b.N; i++ {
+		mx.TryLock(ctx)
+
+		go func() {
+			mx.Unlock()
+		}()
+
+		mx.TryLock(ctx)
+		mx.Unlock()
+	}
+}
+
 func BenchmarkRWTMutexTryRLockRUnlock(b *testing.B) {
 	ctx := context.Background()
 	mx := RWTMutex{}
@@ -63,10 +79,40 @@ func BenchmarkRWMutexRLockRUnlock(b *testing.B) {
 	}
 }
 
+func BenchmarkDT_RWMutexLockUnlock(b *testing.B) {
+	mx := sync.RWMutex{}
+
+	for i := 0; i < b.N; i++ {
+		mx.Lock()
+
+		go func() {
+			mx.Unlock()
+		}()
+
+		mx.Lock()
+		mx.Unlock()
+	}
+}
+
 func BenchmarkMutexLockUnlock(b *testing.B) {
 	mx := sync.Mutex{}
 
 	for i := 0; i < b.N; i++ {
+		mx.Lock()
+		mx.Unlock()
+	}
+}
+
+func BenchmarkDT_MutexLockUnlock(b *testing.B) {
+	mx := sync.Mutex{}
+
+	for i := 0; i < b.N; i++ {
+		mx.Lock()
+
+		go func() {
+			mx.Unlock()
+		}()
+
 		mx.Lock()
 		mx.Unlock()
 	}
