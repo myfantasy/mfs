@@ -55,7 +55,7 @@ func BenchmarkNT_RWTMutexTryLockUnlock(b *testing.B) {
 	ctx := context.Background()
 	mx := RWTMutex{}
 
-	k := 100
+	k := 1000
 
 	for i := 0; i < b.N; i++ {
 		var wg sync.WaitGroup
@@ -123,7 +123,7 @@ func BenchmarkDT_RWMutexLockUnlock(b *testing.B) {
 func BenchmarkNT_RWMutexLockUnlock(b *testing.B) {
 	mx := sync.RWMutex{}
 
-	k := 100
+	k := 1000
 
 	for i := 0; i < b.N; i++ {
 		var wg sync.WaitGroup
@@ -173,7 +173,7 @@ func BenchmarkDT_MutexLockUnlock(b *testing.B) {
 func BenchmarkNT_MutexLockUnlock(b *testing.B) {
 	mx := sync.Mutex{}
 
-	k := 100
+	k := 1000
 
 	for i := 0; i < b.N; i++ {
 		var wg sync.WaitGroup
@@ -204,6 +204,23 @@ func BenchmarkDT_N_MutexLockUnlock(b *testing.B) {
 
 		go func() {
 		}()
+
+		mx.Unlock()
+	}
+}
+
+func BenchmarkNT_N_MutexLockUnlock(b *testing.B) {
+	mx := sync.Mutex{}
+
+	k := 1000
+
+	for i := 0; i < b.N; i++ {
+		mx.Lock()
+
+		for j := 0; j < k; j++ {
+			go func() {
+			}()
+		}
 
 		mx.Unlock()
 	}
