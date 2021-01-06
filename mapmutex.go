@@ -19,6 +19,10 @@ type MapMutex struct {
 // GetMutex - gets PMutex from MapMutex by name
 func (m *MapMutex) GetMutex(name string) *PMutex {
 	m.mxGlobal.Lock()
+	if m.mapMx == nil {
+		m.mapMx = make(map[string]*PMutex)
+	}
+
 	mx, ok := m.mapMx[name]
 	if !ok {
 		mx = &PMutex{}
