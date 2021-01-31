@@ -329,4 +329,11 @@ func TestRWTMutex(t *testing.T) {
 
 }
 
+func TestRWTMutex_Reduce(t *testing.T) {
+	var mx RWTMutex
+	mx.Lock()
+	mx.Reduce()
+	mx.RUnlock()
+}
+
 // TODO: make normal test

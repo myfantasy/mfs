@@ -67,6 +67,16 @@ func (m *RWTMutex) Unlock() {
 	panic("RWTMutex: Unlock fail")
 }
 
+// Reduce - lock mutex from Lock to RLock
+func (m *RWTMutex) Reduce() {
+	if atomic.CompareAndSwapInt32(&m.state, rwtmLocked, 1) {
+		m.chClose()
+		return
+	}
+
+	panic("RWTMutex: Reduce fail")
+}
+
 // TryLock - try locks mutex with context
 func (m *RWTMutex) TryLock(ctx context.Context) bool {
 	if atomic.CompareAndSwapInt32(&m.state, 0, rwtmLocked) {
